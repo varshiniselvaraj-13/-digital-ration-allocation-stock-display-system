@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ration Distribution Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --gray-color: #95a5a6;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 18px 0;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .tab.active {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            background-color: #f8f9fa;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-report {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-report:hover {
+            background-color: #c0392b;
+        }
+        
+        .ration-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--success-color);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .ration-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .ration-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .ration-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-weight: 600;
+        }
+        
+        .item-quantity {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-received {
+            background-color: rgba(39, 174, 96, 0.15);
+            color: var(--success-color);
+        }
+        
+        .status-pending {
+            background-color: rgba(241, 196, 15, 0.15);
+            color: #f39c12;
+        }
+        
+        .shortage-item {
+            background-color: #fff5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .shortage-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .shortage-date {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .alert-success {
+            background-color: rgba(39, 174, 96, 0.15);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .stat-card h3 {
+            color: var(--gray-color);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--gray-color);
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <div>
+                        <h1>Ration Distribution System</h1>
+                        <p class="tagline">Transparent allocation and tracking of ration supplies for families</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i> Family ID: FAM-2023-0582
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h3>Total Ration Items</h3>
+                <div class="stat-value" id="totalItems">8</div>
+            </div>
+            <div class="stat-card">
+                <h3>Received This Month</h3>
+                <div class="stat-value" id="receivedItems">6</div>
+            </div>
+            <div class="stat-card">
+                <h3>Shortages Reported</h3>
+                <div class="stat-value" id="shortagesCount">2</div>
+            </div>
+            <div class="stat-card">
+                <h3>Next Distribution</h3>
+                <div class="stat-value">15th</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="check-ration">Check Your Ration</div>
+            <div class="tab" data-tab="report-shortage">Report Shortage</div>
+            <div class="tab" data-tab="view-history">Distribution History</div>
+        </div>
+        
+        <div class="tab-content active" id="check-ration">
+            <h2><i class="fas fa-box-open"></i> Your Current Ration Allocation</h2>
+            <p class="alert alert-success">
+                <i class="fas fa-info-circle"></i> Your ration for this month has been allocated. Please check the details below and report any shortages.
+            </p>
+            
+            <div class="ration-card">
+                <h3>Monthly Ration - November 2023 <span class="status status-received">Partially Received</span></h3>
+                <div id="rationItemsList">
+                    <!-- Ration items will be dynamically added here -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Family Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div>
+                        <label>Family ID</label>
+                        <input type="text" value="FAM-2023-0582" readonly>
+                    </div>
+                    <div>
+                        <label>Head of Family</label>
+                        <input type="text" value="Rajesh Kumar" readonly>
+                    </div>
+                    <div>
+                        <label>Family Members</label>
+                        <input type="text" value="5" readonly>
+                    </div>
+                    <div>
+                        <label>Distribution Center</label>
+                        <input type="text" value="Center #12, Sector 7" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="report-shortage">
+            <h2><i class="fas fa-exclamation-triangle"></i> Report Shortage or Missing Items</h2>
+            <p class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i> Please report any shortages or issues with your ration allocation within 7 days of distribution.
+            </p>
+            
+            <form id="shortageForm">
+                <div class="form-group">
+                    <label for="missingItem">Select Missing Item</label>
+                    <select id="missingItem" required>
+                        <option value="">Select an item</option>
+                        <option value="wheat">Wheat Flour</option>
+                        <option value="rice">Rice</option>
+                        <option value="sugar">Sugar</option>
+                        <option value="pulses">Pulses (Lentils)</option>
+                        <option value="oil">Cooking Oil</option>
+                        <option value="salt">Salt</option>
+                        <option value="tea">Tea Leaves</option>
+                        <option value="spices">Spices</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="expectedQuantity">Expected Quantity</label>
+                    <input type="text" id="expectedQuantity" placeholder="e.g., 5 kg" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="receivedQuantity">Received Quantity</label>
+                    <input type="text" id="receivedQuantity" placeholder="e.g., 3 kg (leave empty if nothing received)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shortageDetails">Additional Details</label>
+                    <textarea id="shortageDetails" rows="4" placeholder="Please provide any additional details about the shortage..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-report">
+                    <i class="fas fa-paper-plane"></i> Submit Shortage Report
+                </button>
+            </form>
+            
+            <div id="reportedShortages" style="margin-top: 40px;">
+                <h3>Your Reported Shortages</h3>
+                <div id="shortagesList">
+                    <!-- Reported shortages will appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="view-history">
+            <h2><i class="fas fa-history"></i> Distribution History</h2>
+            
+            <div class="ration-card">
+                <h3>October 2023 <span class="status status-received">Fully Received</span></h3>
+                <div class="ration-item">
+                    <span class="item-name">Wheat Flour</span>
+                    <span class="item-quantity">10 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Rice</span>
+                    <span class="item-quantity">5 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Sugar</span>
+                    <span class="item-quantity">2 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Cooking Oil</span>
+                    <span class="item-quantity">1 L</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Pulses</span>
+                    <span class="item-quantity">2 kg</span>
+                </div>
+            </div>
+            
+            <div class="ration-card">
+                <h3>September 2023 <span class="status status-received">Fully Received</span></h3>
+                <div class="ration-item">
+                    <span class="item-name">Wheat Flour</span>
+                    <span class="item-quantity">10 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Rice</span>
+                    <span class="item-quantity">5 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Sugar</span>
+                    <span class="item-quantity">2 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Cooking Oil</span>
+                    <span class="item-quantity">1 L</span>
+                </div>
+            </div>
+            
+            <div class="ration-card">
+                <h3>August 2023 <span class="status status-pending">Partial (Shortage Reported)</span></h3>
+                <div class="ration-item">
+                    <span class="item-name">Wheat Flour</span>
+                    <span class="item-quantity">8 kg (of 10 kg)</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Rice</span>
+                    <span class="item-quantity">5 kg</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Sugar</span>
+                    <span class="item-quantity">1 kg (of 2 kg)</span>
+                </div>
+                <div class="ration-item">
+                    <span class="item-name">Cooking Oil</span>
+                    <span class="item-quantity">1 L</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Ration Distribution Management System &copy; 2023 | For assistance contact: ration.support@help.gov | Toll-free: 1800-123-4567</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample ration data
+        const rationItems = [
+            { name: "Wheat Flour", expected: "10 kg", received: "10 kg", status: "received" },
+            { name: "Rice", expected: "5 kg", received: "5 kg", status: "received" },
+            { name: "Sugar", expected: "2 kg", received: "2 kg", status: "received" },
+            { name: "Cooking Oil", expected: "1 L", received: "1 L", status: "received" },
+            { name: "Pulses (Lentils)", expected: "2 kg", received: "1 kg", status: "shortage" },
+            { name: "Salt", expected: "1 kg", received: "1 kg", status: "received" },
+            { name: "Tea Leaves", expected: "200 g", received: "200 g", status: "received" },
+            { name: "Spices", expected: "500 g", received: "0 g", status: "missing" }
+        ];
+
+        // Sample reported shortages
+        let reportedShortages = [
+            { item: "Pulses (Lentils)", expected: "2 kg", received: "1 kg", date: "2023-11-05", details: "Received only half of the expected quantity." },
+            { item: "Spices", expected: "500 g", received: "0 g", date: "2023-11-05", details: "Spices packet was completely missing from the ration." }
+        ];
+
+        // DOM elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const rationItemsList = document.getElementById('rationItemsList');
+        const shortagesList = document.getElementById('shortagesList');
+        const shortageForm = document.getElementById('shortageForm');
+        const totalItemsEl = document.getElementById('totalItems');
+        const receivedItemsEl = document.getElementById('receivedItems');
+        const shortagesCountEl = document.getElementById('shortagesCount');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load ration items
+            loadRationItems();
+            
+            // Load reported shortages
+            loadReportedShortages();
+            
+            // Update statistics
+            updateStatistics();
+            
+            // Set up tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Set up form submission
+            shortageForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                reportShortage();
+            });
+            
+            // Initialize textarea element (missing from HTML)
+            const textarea = document.createElement('textarea');
+            textarea.id = 'shortageDetails';
+            textarea.rows = 4;
+            textarea.placeholder = 'Please provide any additional details about the shortage...';
+            textarea.style.width = '100%';
+            textarea.style.padding = '12px 15px';
+            textarea.style.border = '1px solid #ddd';
+            textarea.style.borderRadius = '6px';
+            textarea.style.fontSize = '1rem';
+            textarea.style.resize = 'vertical';
+            
+            const shortageDetailsContainer = document.getElementById('shortageDetails');
+            if (shortageDetailsContainer) {
+                shortageDetailsContainer.parentNode.replaceChild(textarea, shortageDetailsContainer);
+            }
+        });
+
+        // Function to switch between tabs
+        function switchTab(tabId) {
+            // Update active tab
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update active tab content
+            tabContents.forEach(content => {
+                if (content.id === tabId) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to load ration items
+        function loadRationItems() {
+            rationItemsList.innerHTML = '';
+            
+            rationItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'ration-item';
+                
+                let statusIcon = '';
+                if (item.status === 'received') {
+                    statusIcon = '<i class="fas fa-check-circle" style="color: #27ae60; margin-right: 5px;"></i>';
+                } else if (item.status === 'shortage') {
+                    statusIcon = '<i class="fas fa-exclamation-triangle" style="color: #e74c3c; margin-right: 5px;"></i>';
+                } else {
+                    statusIcon = '<i class="fas fa-times-circle" style="color: #e74c3c; margin-right: 5px;"></i>';
+                }
+                
+                itemElement.innerHTML = `
+                    <span class="item-name">${statusIcon} ${item.name}</span>
+                    <span class="item-quantity">${item.received} of ${item.expected}</span>
+                `;
+                
+                rationItemsList.appendChild(itemElement);
+            });
+        }
+
+        // Function to load reported shortages
+        function loadReportedShortages() {
+            shortagesList.innerHTML = '';
+            
+            if (reportedShortages.length === 0) {
+                shortagesList.innerHTML = '<p style="text-align: center; padding: 20px; color: #7f8c8d;">No shortages reported yet.</p>';
+                return;
+            }
+            
+            reportedShortages.forEach(shortage => {
+                const shortageElement = document.createElement('div');
+                shortageElement.className = 'shortage-item';
+                
+                shortageElement.innerHTML = `
+                    <div class="shortage-header">
+                        <strong>${shortage.item}</strong>
+                        <span class="shortage-date">${shortage.date}</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <span>Expected: ${shortage.expected} | Received: ${shortage.received}</span>
+                    </div>
+                    <div>${shortage.details}</div>
+                `;
+                
+                shortagesList.appendChild(shortageElement);
+            });
+        }
+
+        // Function to update statistics
+        function updateStatistics() {
+            totalItemsEl.textContent = rationItems.length;
+            
+            const receivedCount = rationItems.filter(item => item.status === 'received').length;
+            receivedItemsEl.textContent = receivedCount;
+            
+            shortagesCountEl.textContent = reportedShortages.length;
+        }
+
+        // Function to report a shortage
+        function reportShortage() {
+            const missingItem = document.getElementById('missingItem').value;
+            const expectedQuantity = document.getElementById('expectedQuantity').value;
+            const receivedQuantity = document.getElementById('receivedQuantity').value;
+            const shortageDetails = document.getElementById('shortageDetails').value;
+            
+            if (!missingItem || !expectedQuantity || !receivedQuantity) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Get item name from value
+            const itemNameMap = {
+                'wheat': 'Wheat Flour',
+                'rice': 'Rice',
+                'sugar': 'Sugar',
+                'pulses': 'Pulses (Lentils)',
+                'oil': 'Cooking Oil',
+                'salt': 'Salt',
+                'tea': 'Tea Leaves',
+                'spices': 'Spices'
+            };
+            
+            const itemName = itemNameMap[missingItem] || missingItem;
+            
+            // Create new shortage object
+            const newShortage = {
+                item: itemName,
+                expected: expectedQuantity,
+                received: receivedQuantity || '0',
+                date: new Date().toISOString().split('T')[0],
+                details: shortageDetails || 'No additional details provided.'
+            };
+            
+            // Add to reported shortages
+            reportedShortages.unshift(newShortage);
+            
+            // Update the UI
+            loadReportedShortages();
+            updateStatistics();
+            
+            // Show success message
+            alert(`Shortage for ${itemName} has been reported successfully.`);
+            
+            // Reset the form
+            shortageForm.reset();
+            
+            // Update ration items if this item is already in the list
+            const existingItemIndex = rationItems.findIndex(item => 
+                item.name.toLowerCase().includes(missingItem.toLowerCase()));
+            
+            if (existingItemIndex !== -1) {
+                rationItems[existingItemIndex].received = receivedQuantity || '0';
+                rationItems[existingItemIndex].status = receivedQuantity === '' || receivedQuantity === '0' ? 'missing' : 'shortage';
+                loadRationItems();
+            }
+        }
+    </script>
+</body>
+</html>
